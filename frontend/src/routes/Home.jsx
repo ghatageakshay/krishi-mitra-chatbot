@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function Home() {
 	return (
-		<div className="text-center rounded-2xl border border-green-100 bg-white shadow-card p-5">
+		<div className="text-center rounded-2xl border border-green-100 bg-white shadow-card p-5 mb-4">
 			<h1 className="text-2xl font-semibold text-slate-900 leading-snug">पिकांचे आजार ओळखा, योग्य मार्गदर्शन मिळवा</h1>
 			<p className="text-slate-600 mt-2">फोटो पाठवा, शासकीय योजना पाहा आणि हवामानानुसार नियोजन करा.</p>
 
@@ -22,10 +22,14 @@ function Home() {
 					<div className="font-medium mt-2">स्थानिक हवामान</div>
 					<p className="text-base text-slate-600 mt-1">आठवड्याचे नियोजन करण्यासाठी उपयुक्त माहिती मिळवा.</p>
 				</Link>
+				<Link to="/calendar" className="rounded-2xl border-green-200 bg-gradient-to-br from-green-50 to-green-100/50 p-5 shadow-card hover:shadow-lg transition text-left">
+					<div className="text-2xl">📅</div>
+					<div className="font-medium mt-2 text-green-900">पीक वेळापत्रक (नवीन कॅलेंडर)</div>
+					<p className="text-base text-green-800 mt-1">तुमच्या पिकाची वाढ आणि दैनंदिन शेतीकामांचे योग्य नियोजन करण्यासाठी पहा.</p>
+				</Link>
 			</div>
 		</div>
 	);
 }
 
 export default Home;
-

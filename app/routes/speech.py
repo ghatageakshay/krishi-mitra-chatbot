@@ -9,18 +9,14 @@ router=APIRouter()
 #testing basic marathi response route
 @router.post("/ask")
 async def ask_question(
-    text:str=Form(),
+    text:str=Form(None),
     file:UploadFile=File(None)
 ):
-    image=None
+    image_bytes=None
     if file:
-        image=await file.read()
+        image_bytes=await file.read()
 
-    result=process_query(text,image)
-
-    return{
-        "input":text,
-        "result":result
-    }
-
+    result=process_query(text=text,image=image_bytes)
+    print("text value",text)
+    return result
    

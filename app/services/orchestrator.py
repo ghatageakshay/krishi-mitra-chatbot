@@ -1,44 +1,59 @@
 from app.services.ml_model import predict_disease
 from app.services.weather_service import get_weather
-def process_query(text:str=None,image=None):
+from app.services.ai_service import get_ai_response
 
-    text=text.strip() if text else ""
+print("🔥 ORCHESTRATOR FILE LOADED 🔥")
 
-    #for disease relaetd queries
-    if "रोग" in text or "पिवळे" in text or "डाग" in text:
+qa_map = {
+    "पाणी": "पिकानुसार पाण्याचे प्रमाण ठरते. जास्त पाणी देणे टाळा.",
+    "खत": "माती चाचणी करून योग्य खत वापरा.",
+    "कीड": "कीटकनाशक योग्य प्रमाणात वापरा.",
+    "तापमान": "हवामानानुसार शेतीचे नियोजन करा.",
+    "रोग": "रोग ओळखण्यासाठी फोटो अपलोड करा."
+}
 
-        if image:
-            result=predict_disease(image)
-            return{
-                "type":"disease",
-                "data":result
-            }
+def process_query(text=None, image=None):
+    # 🥇 1. IMAGE FIRST
+    if image:
+        return {
+            "type": "disease",
+            "data": predict_disease(image)
+        }
+
+    # 🥇 2. AI FIRST
+    if text:
+        print("🔥 TEXT RECEIVED:", text)
+        ai_response = None 
+
+        try:
+            print("🚀 CALLING AI...")
+            ai_response = get_ai_response(text)
+            print("✅ AI RESPONSE:", ai_response)
         
-        else:
-            return{
-                "type" : "disease",
-                "message" : "कृपया पिकाचा फोटो अपलोड करा"
-            }
-        
-    #water related
+            # Return only if we got a valid response
+            if ai_response and len(ai_response.strip()) > 10:
+                return {
+                    "type": "ai",
+                    "response": ai_response
+                }
+            
+        except Exception as e:
+            print("❌ AI ERROR:", e)
+            # We set this to None so the code continues to the fallback section
+            ai_response = None
 
-    elif "पाणी" in text:
-        return{
-            "type" : "general",
-            "message": "सकाळी किंवा संध्याकाळी पाणी द्या"
-        }
-    
-    #weather realted queries
-    elif "पाऊस" in text or"हवामान" in text:
+    # 🥉 3. FALLBACK (Only runs if AI block didn't return)
+    if text:
+        search_text = text.lower()
+        for key in qa_map:
+            if key in search_text: 
+                return {
+                    "type": "qa",
+                    "response": qa_map[key]
+                }
 
-        weather_info=get_weather("Pune")
-        return{
-            "type":"weather",
-            "message":weather_info
-        }
-    
-    else:
-        return{
-            "type":"unknown",
-            "message":"माफ करा, मला तुमचा प्रश्न समजला नाही"
-        }
+    # 🏅 4. DEFAULT
+    return {
+        "type": "unknown",
+        "response": "कृपया स्पष्ट प्रश्न विचारा"
+    }

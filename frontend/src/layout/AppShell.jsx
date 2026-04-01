@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Chat from "../components/chat";
+import { 
+	Home as HomeIcon, 
+	ScanLine, 
+	FileText, 
+	CloudSun, 
+	BadgeIndianRupee, 
+	Headset, 
+	Phone 
+} from "lucide-react";
 
 function AppShell() {
 	const navigate = useNavigate();
@@ -15,14 +24,13 @@ function AppShell() {
 	}, [location.pathname]);
 
 	const items = [
-		{ to: "/", label: isMr ? "मुखपृष्ठ" : "Home" },
-		{ to: "/detect", label: isMr ? "रोग ओळखा" : "Detect" },
-		{ to: "/schemes", label: isMr ? "योजना" : "Schemes" },
-		{ to: "/weather", label: isMr ? "हवामान" : "Weather" },
-		{ to: "/market", label: isMr ? "बाजारभाव" : "Market Prices" },
-		{ to: "/calendar", label: isMr ? "पीक वेळापत्रक" : "Crop Calendar" },
-		{ to: "/assistant", label: isMr ? "कृषीमित्र" : "Assistant" },
-		{ to: "/contact", label: isMr ? "संपर्क करा" : "Contact" }
+		{ to: "/", label: isMr ? "मुखपृष्ठ" : "Home", icon: HomeIcon },
+		{ to: "/detect", label: isMr ? "रोग ओळखा" : "Detect", icon: ScanLine },
+		{ to: "/schemes", label: isMr ? "योजना" : "Schemes", icon: FileText },
+		{ to: "/weather", label: isMr ? "हवामान" : "Weather", icon: CloudSun },
+		{ to: "/market", label: isMr ? "बाजारभाव" : "Market", icon: BadgeIndianRupee },
+		{ to: "/assistant", label: isMr ? "कृषीमित्र" : "Assistant", icon: Headset },
+		{ to: "/contact", label: isMr ? "संपर्क" : "Contact", icon: Phone }
 	];
 
 	return (
@@ -37,7 +45,6 @@ function AppShell() {
 							{isMr ? "पीक आरोग्य सहाय्यक" : "Crop Assistant"}
 						</span>
 					</div>
-					{/* Mobile-first dropdown nav (shown on all sizes) */}
 					<div className="flex items-center gap-1">
 						<button 
 							onClick={() => setLang(isMr ? 'en' : 'mr')}
@@ -45,24 +52,13 @@ function AppShell() {
 						>
 							{isMr ? "EN" : "मराठी"}
 						</button>
-						<select
-							className="w-full min-w-[90px] bg-white border border-green-200 rounded-lg px-1 py-1 text-sm text-slate-800 focus:outline-none"
-							onChange={(e) => navigate(e.target.value)}
-							defaultValue={window.location.pathname}
-						>
-							{items.map((it) => (
-								<option key={it.to} value={it.to}>
-									{it.label}
-								</option>
-							))}
-						</select>
 					</div>
 				</div>
 			</header>
-			<div className="flex-1 overflow-y-auto flex flex-col">
+			
+			<div className="flex-1 overflow-y-auto flex flex-col no-scrollbar">
 				<main className="flex-1">
 					<div className="px-3 py-4">
-						{/* Route content animation (keeps navigation feeling smooth) */}
 						<div key={location.pathname} className="route-transition">
 							<Outlet context={{ lang }} />
 						</div>
@@ -72,21 +68,47 @@ function AppShell() {
 					{isMr ? "स्पर्धेसाठी तयार केलेले • पीक आरोग्य, योजना आणि हवामान एका ठिकाणी" : "Built for Competition • Crop Health, Schemes & Weather"}
 				</footer>
 			</div>
+
 			{/* Floating KrushiMitra assistant button */}
 			<button
 				type="button"
 				onClick={() => setShowAssistant(true)}
-				className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20 rounded-full bg-primary text-white shadow-lg shadow-primary/40 h-14 w-14 flex items-center justify-center hover:bg-primary/90 transition"
+				className="absolute bottom-[84px] sm:bottom-[90px] right-4 z-20 rounded-full bg-primary text-white shadow-lg shadow-primary/40 h-14 w-14 flex items-center justify-center hover:bg-primary/90 transition transform hover:scale-105"
 				aria-label="KrushiMitra assistant"
 			>
 				<span className="text-2xl">🤖</span>
 			</button>
 
+			{/* Bottom Navigation */}
+			<nav className="shrink-0 bg-white border-t border-slate-200 safe-pb z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+				<div className="flex items-center overflow-x-auto no-scrollbar px-1 py-1 gap-1">
+					{items.map((it) => {
+						const isActive = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
+						return (
+							<NavLink
+								key={it.to}
+								to={it.to}
+								className={`flex flex-col items-center justify-center min-w-[72px] py-2 px-1 rounded-xl transition-all ${
+									isActive
+										? "text-primary"
+										: "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+								}`}
+							>
+								<div className={`mb-1 p-1 rounded-full text-slate-400 transition-colors ${isActive ? "bg-primary/10 text-primary" : ""}`}>
+									<it.icon strokeWidth={isActive ? 2.5 : 2} className={`h-[22px] w-[22px] ${isActive ? "text-primary" : "currentColor"}`} />
+								</div>
+								<span className={`text-[10px] whitespace-nowrap ${isActive ? "font-bold text-primary" : "font-medium"}`}>{it.label}</span>
+							</NavLink>
+						);
+					})}
+				</div>
+			</nav>
+
 			{showAssistant && (
-				<div className="absolute inset-0 z-30 flex items-end sm:items-center justify-center bg-black/40">
-					<div className="w-full sm:max-w-md mx-2 sm:mx-0 mb-2 sm:mb-0 max-h-full">
-						<div className="rounded-t-2xl sm:rounded-2xl bg-white shadow-card overflow-hidden flex flex-col max-h-full">
-							<div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
+				<div className="absolute inset-0 z-30 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm">
+					<div className="w-full h-[90%] sm:h-auto sm:max-w-md mx-0 sm:mx-2 max-h-full">
+						<div className="rounded-t-2xl sm:rounded-2xl bg-white shadow-card overflow-hidden flex flex-col h-full sm:max-h-[85vh]">
+							<div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50 shrink-0">
 								<div>
 									<div className="text-sm font-semibold text-slate-900">{isMr ? "कृषीमित्र" : "KrushiMitra"}</div>
 									<div className="text-xs text-slate-500">{isMr ? "शेतीविषयक प्रश्नांसाठी तुमचा सहाय्यक" : "Your assistant for farming questions"}</div>
@@ -94,13 +116,13 @@ function AppShell() {
 								<button
 									type="button"
 									onClick={() => setShowAssistant(false)}
-									className="rounded-full p-1.5 hover:bg-slate-200 transition"
+									className="rounded-full w-8 h-8 flex items-center justify-center bg-slate-200 hover:bg-slate-300 text-slate-700 transition"
 									aria-label="Close assistant"
 								>
-									<span className="text-lg">✕</span>
+									<span className="text-sm font-bold">✕</span>
 								</button>
 							</div>
-							<div className="flex-1 px-4 py-4 min-h-0 overflow-y-auto">
+							<div className="flex-1 px-2 py-4 sm:px-4 min-h-0 overflow-y-auto">
 								<Chat />
 							</div>
 						</div>
