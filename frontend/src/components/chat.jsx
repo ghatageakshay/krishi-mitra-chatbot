@@ -13,7 +13,8 @@ function Chat() {
     formData.append("text", text);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/ask", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+      const res = await fetch(`${API_URL}/ask`, {
         method: "POST",
         body: formData,
       });

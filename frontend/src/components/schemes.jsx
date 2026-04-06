@@ -14,8 +14,9 @@ function Schemes() {
     setLoading(true);
 
     try {
+      const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
       const res = await fetch(
-        `http://127.0.0.1:8000/schemes/${crop.toLowerCase()}`
+        `${API_URL}/schemes/${crop.toLowerCase()}`
       );
 
       const data = await res.json();

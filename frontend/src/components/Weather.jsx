@@ -14,8 +14,9 @@ function Weather() {
     setLoading(true);
 
     try {
+      const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
       const res = await fetch(
-        `http://127.0.0.1:8000/weather/${city}`
+        `${API_URL}/weather/${city}`
       );
 
       const result = await res.json();
@@ -52,12 +53,12 @@ function Weather() {
       {loading && <p>⏳ हवामान लोड होत आहे...</p>}
 
       {data && !data.error && (
-      <div
+        <div
           style={{
             border: "1px solid #d1fae5",
             borderRadius: "14px",
             padding: "15px",
-          marginTop: "16px",
+            marginTop: "16px",
             backgroundColor: "#ffffff",
             textAlign: "left"
           }}

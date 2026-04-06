@@ -17,7 +17,8 @@ function Upload() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/predict-disease", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+      const res = await fetch(`${API_URL}/predict-disease`, {
         method: "POST",
         body: formData
       });
@@ -48,7 +49,7 @@ function Upload() {
           onClick={sendImage}
           className="w-full rounded-xl bg-primary text-white text-base font-medium px-4 py-3 hover:bg-primary/90 transition"
         >
-        विश्लेषण करा
+          विश्लेषण करा
         </button>
       </div>
 
