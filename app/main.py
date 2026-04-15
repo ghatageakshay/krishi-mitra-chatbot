@@ -15,6 +15,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def read_root():
+    return {"status": "online", "message": "Krishi Mitra API is running successfully!"}
+
 app.include_router(speech.router)
 app.include_router(disease.router)
 app.include_router(schemes_route.router)
